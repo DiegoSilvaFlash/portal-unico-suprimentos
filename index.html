@@ -364,7 +364,7 @@ const PORTAL_CONFIG = {
   biblioteca: "Documentos",
   pasta:      "CSC - SUPRIMENTOS/GERENCIAL/INDICADORES/DIÁRIA/Portal_Unico",
   arquivos:   { catalogo: "portal-catalogo.json", solicitacoes: "portal-solicitacoes.json" },
-  admins:     ["diego.silva@flashcourier.com.br"],
+  admins:     ["diego.silva@flashcourier.com.br", "suporte.totvs@move3.com.br", "r.gama@move3.com.br"],
   atualizarSegundos: 30
 };
 /* ===================================================================================== */
@@ -551,6 +551,8 @@ const ICONES = {
 const ICONE_PADRAO = {suprimentos:"carrinho",facilities:"ferramenta",contratos:"contrato",seguros:"escudo",almoxarifado:"caixas",sustentabilidade:"folha"};
 const svgIco = k => `<svg viewBox="0 0 24 24" aria-hidden="true">${ICONES[k]||ICONES.pasta}</svg>`;
 const icoArea = a => svgIco(a.icone||ICONE_PADRAO[a.id]||"pasta");
+const FORM_TXT = { facilities: { h: "Solicitação de manutenção", t: "Descrever a anomalia (Falha/problema/quebra...)" } };
+const formTxt = a => ({ h: (a&&a.tituloForm) || (FORM_TXT[a&&a.id]||{}).h || "Dados gerais", t: (a&&a.rotuloTitulo) || (FORM_TXT[a&&a.id]||{}).t || "Título da solicitação" });
 const CORES = ["#1e3c62","#d9730f","#1d8457","#2a68ad","#8a4fb8","#bf3d2b","#0f8a8a","#6b7280"];
 
 // Usado somente no modo demonstração (sem banco de dados). Nada é salvo.
@@ -738,9 +740,9 @@ function vNova(){
     return `<div class="f ${c.tipo==="texto_longo"||c.tipo==="estoque"?"full":""} ${e[id]?"err":""}"><label for="${id}">${esc(c.label)}${req}</label>${input}${c.ajuda?`<span class="hint">${esc(c.ajuda)}</span>`:""}${fe(id)}</div>`;
   };
   return h+`<div class="form-shell"><form class="panel" id="formNova" novalidate>
-    <h2>Dados gerais</h2><span class="muted" style="font-size:13px">Iguais para todas as demandas. É isso que padroniza a entrada para os portais.</span>
+    <h2>${esc(formTxt(area).h)}</h2>
     <div class="fieldset">
-      <div class="f full ${e.titulo?"err":""}"><label for="titulo">Título da solicitação<span class="req">*</span></label><input type="text" id="titulo" maxlength="120" value="${esc(d.titulo||"")}" placeholder="Resumo em uma linha" data-draft>${fe("titulo")}</div>
+      <div class="f full ${e.titulo?"err":""}"><label for="titulo">${esc(formTxt(area).t)}<span class="req">*</span></label><input type="text" id="titulo" maxlength="120" value="${esc(d.titulo||"")}" placeholder="Resumo em uma linha" data-draft>${fe("titulo")}</div>
       <div class="f full ${e.unidade?"err":""}"><label for="unidade">Unidade<span class="req">*</span></label><select id="unidade" data-draft><option value="">Selecione…</option>${UNIDADES.map(x=>`<option ${d.unidade===x?"selected":""}>${x}</option>`).join("")}</select>${fe("unidade")}</div>
       <div class="f full"><label>Prioridade</label><div class="radio-row" role="radiogroup" aria-label="Prioridade">${PRIORIDADES.map(p=>`<label><input type="radio" name="prioridade" value="${p}" ${(d.prioridade||"Média")===p?"checked":""} data-draft><span>${p}</span></label>`).join("")}</div></div>
       <div class="f full ${e.descricao?"err":""}"><label for="descricao">Descrição<span class="req">*</span></label><textarea id="descricao" data-draft placeholder="Contexto, justificativa e o que você espera como resultado">${esc(d.descricao||"")}</textarea>${fe("descricao")}</div>
